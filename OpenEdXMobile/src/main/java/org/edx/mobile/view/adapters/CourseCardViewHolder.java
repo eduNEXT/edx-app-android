@@ -21,15 +21,12 @@ public class CourseCardViewHolder extends BaseListAdapter.BaseViewHolder {
 
     private final ImageView courseImage;
     private final TextView courseTitle;
-    private final TextView courseRun;
     private final TextView startingFrom;
     private final View newCourseContent;
 
     public CourseCardViewHolder(View convertView) {
         this.courseTitle = (TextView) convertView
                 .findViewById(R.id.course_name);
-        this.courseRun = (TextView) convertView
-                .findViewById(R.id.course_run);
         this.startingFrom = (TextView) convertView
                 .findViewById(R.id.starting_from);
         this.courseImage = (ImageView) convertView
@@ -60,10 +57,9 @@ public class CourseCardViewHolder extends BaseListAdapter.BaseViewHolder {
         newCourseContent.setOnClickListener(listener);
     }
 
-    public void setDescription(@NonNull String description, @NonNull String formattedDate) {
+    public void setDate(@NonNull String formattedDate) {
         newCourseContent.setVisibility(View.GONE);
         startingFrom.setVisibility(View.VISIBLE);
-        courseRun.setText(description);
         startingFrom.setText(formattedDate);
     }
 }
