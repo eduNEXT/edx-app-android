@@ -24,7 +24,6 @@ import com.joanzapata.iconify.widget.IconImageView;
 import org.edx.mobile.R;
 import org.edx.mobile.core.IEdxEnvironment;
 import org.edx.mobile.logger.Logger;
-import org.edx.mobile.model.api.CourseEntry;
 import org.edx.mobile.model.api.EnrolledCoursesResponse;
 import org.edx.mobile.model.course.BlockPath;
 import org.edx.mobile.model.course.BlockType;
@@ -43,6 +42,7 @@ import org.edx.mobile.util.MemoryUtil;
 import org.edx.mobile.util.ResourceUtil;
 import org.edx.mobile.util.TimeZoneUtils;
 import org.edx.mobile.util.VideoUtil;
+import org.edx.mobile.util.images.CourseCardUtils;
 import org.edx.mobile.util.images.TopAnchorFillWidthTransformation;
 
 import java.text.SimpleDateFormat;
@@ -595,8 +595,7 @@ public class NewCourseOutlineAdapter extends BaseAdapter {
                 .into(headerImageView);
 
         courseTextName.setText(courseData.getCourse().getName());
-        CourseEntry course = courseData.getCourse();
-        courseTextDetails.setText(course.getDescriptionWithStartDate(context));
+        courseTextDetails.setText(CourseCardUtils.getFormattedDate(context, courseData.getCourse()));
 
         return view;
     }
