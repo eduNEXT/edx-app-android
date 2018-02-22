@@ -25,7 +25,7 @@ public abstract class FindCoursesListAdapter extends BaseListAdapter<CourseDetai
         final CourseCardViewHolder holder = (CourseCardViewHolder) tag;
         holder.setCourseTitle(courseDetail.name);
         holder.setCourseImage(courseDetail.media.course_image.getUri(environment.getConfig().getApiHostURL()));
-        holder.setDate(CourseCardUtils.getFormattedDate(getContext(), courseDetail));
+        holder.setDetails(CourseCardUtils.getFormattedDate(getContext(), courseDetail));
     }
 
     @Override

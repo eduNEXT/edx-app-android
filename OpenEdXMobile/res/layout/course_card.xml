@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fl_course_card_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
@@ -37,7 +38,7 @@
             tools:text="@string/course_name" />
 
         <TextView
-            android:id="@+id/starting_from"
+            android:id="@+id/course_details"
             style="@style/course_card_course_run"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

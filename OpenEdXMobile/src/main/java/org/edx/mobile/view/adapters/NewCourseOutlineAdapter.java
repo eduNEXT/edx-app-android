@@ -580,7 +580,7 @@ public class NewCourseOutlineAdapter extends BaseAdapter {
 
     public View getCardView(View view) {
         final TextView courseTextName = (TextView) view.findViewById(R.id.course_name);
-        final TextView courseTextDetails = (TextView) view.findViewById(R.id.starting_from);
+        final TextView courseTextDetails = (TextView) view.findViewById(R.id.course_details);
         final ImageView headerImageView = (ImageView) view.findViewById(R.id.course_image);
 
         // Full course name should appear on the course's dashboard screen.
