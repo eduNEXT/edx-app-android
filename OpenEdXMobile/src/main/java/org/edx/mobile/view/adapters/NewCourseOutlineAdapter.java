@@ -161,7 +161,7 @@ public class NewCourseOutlineAdapter extends BaseAdapter {
             }
             case SectionRow.COURSE_CARD: {
                 if (convertView == null) {
-                    convertView = inflater.inflate(R.layout.row_course_card, parent, false);
+                    convertView = inflater.inflate(R.layout.course_card, parent, false);
                 }
                 return getCardView(convertView);
             }
@@ -579,9 +579,9 @@ public class NewCourseOutlineAdapter extends BaseAdapter {
     }
 
     public View getCardView(View view) {
-        final TextView courseTextName = (TextView) view.findViewById(R.id.course_detail_name);
-        final TextView courseTextDetails = (TextView) view.findViewById(R.id.course_detail_extras);
-        final ImageView headerImageView = (ImageView) view.findViewById(R.id.header_image_view);
+        final TextView courseTextName = (TextView) view.findViewById(R.id.course_name);
+        final TextView courseTextDetails = (TextView) view.findViewById(R.id.starting_from);
+        final ImageView headerImageView = (ImageView) view.findViewById(R.id.course_image);
 
         // Full course name should appear on the course's dashboard screen.
         courseTextName.setEllipsize(null);
