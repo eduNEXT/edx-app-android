@@ -19,6 +19,11 @@ import java.net.URLEncoder;
 
 import roboguice.inject.ContentView;
 
+/**
+ * @deprecated As of release v2.13, see {@link MainDashboardActivity}, {@link MainTabsDashboardFragment}
+ * and {@link WebViewDiscoverCoursesFragment} as an alternate.
+ */
+@Deprecated
 @ContentView(R.layout.activity_find_courses)
 public class WebViewFindCoursesActivity extends BaseWebViewFindCoursesActivity {
     private SearchView searchView;
