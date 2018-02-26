@@ -268,6 +268,7 @@ public abstract class BaseFragmentActivity extends BaseAppActivity
      * Call this function if you do not want to allow
      * opening/showing the drawer(Navigation Fragment) on swiping left to right
      */
+    @Deprecated
     protected void blockDrawerFromOpening() {
         DrawerLayout drawerLayout = (DrawerLayout)
                 findViewById(R.id.drawer_layout);
@@ -277,6 +278,7 @@ public abstract class BaseFragmentActivity extends BaseAppActivity
     }
 
     //Closing the Navigation Drawer
+    @Deprecated
     public void closeDrawer() {
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (mDrawerLayout != null) {
