@@ -92,8 +92,8 @@ public class Router {
     public void showLaunchScreen(Context context) {
         final Intent launchIntent = new Intent(context,
                 config.isNewLogistrationEnabled()
-                        ? DiscoveryLaunchActivity.class
-                        : LaunchActivity.class);
+                        ? LaunchActivity.class
+                        : DiscoveryLaunchActivity.class);
         launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(launchIntent);
     }
