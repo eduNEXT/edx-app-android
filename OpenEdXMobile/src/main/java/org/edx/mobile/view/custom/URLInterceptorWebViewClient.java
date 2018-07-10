@@ -212,7 +212,9 @@ public class URLInterceptorWebViewClient extends WebViewClient {
         } else if (parseEnrollLinkAndCallActionListener(url)) {
             // we handled this URL
             return true;
-        } else if (redirect && loadingInitialUrl) {
+        } else if (resourceDownloadActionListener(url)){
+            return true;
+        }else if (redirect && loadingInitialUrl) {
             // Server has redirected the initial url to other hosting url, in this case no need to
             // redirect the user to external browser.
             // Inspiration of this solution has been taken from: https://stackoverflow.com/questions/3149216/how-to-listen-for-a-webview-finishing-loading-a-url/5172952#5172952
@@ -310,6 +312,16 @@ public class URLInterceptorWebViewClient extends WebViewClient {
         return true;
     }
 
+    private boolean resourceDownloadActionListener(@Nullable String strUrl) {
+        if (null == actionListener) {
+            return false;
+        }
+
+        actionListener.downloadResource(strUrl);
+        logger.debug("Download URL: " + strUrl);
+        return true;
+    }
+
     /**
      * Action listener interface for handling enroll link click action
      * and course-info link click action.
@@ -334,6 +346,8 @@ public class URLInterceptorWebViewClient extends WebViewClient {
          * @param emailOptIn
          */
         void onClickEnroll(String courseId, boolean emailOptIn);
+
+        void downloadResource(String strUrl);
     }
 
     /**
