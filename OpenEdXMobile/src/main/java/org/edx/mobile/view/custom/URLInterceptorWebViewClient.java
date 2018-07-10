@@ -2,11 +2,14 @@ package org.edx.mobile.view.custom;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentActivity;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -23,6 +26,7 @@ import org.edx.mobile.util.NetworkUtil;
 import org.edx.mobile.util.StandardCharsets;
 import org.edx.mobile.util.links.EdxCourseInfoLink;
 import org.edx.mobile.util.links.EdxEnrollLink;
+import org.edx.mobile.view.CourseUnitNavigationActivity;
 
 import roboguice.RoboGuice;
 
@@ -117,6 +121,25 @@ public class URLInterceptorWebViewClient extends WebViewClient {
                         pageStatusListener.onPagePartiallyLoaded();
                     }
                 }
+            }
+
+            @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+            public boolean onShowFileChooser(
+                    WebView webView, ValueCallback<Uri[]> filePathCallback,
+                    FileChooserParams fileChooserParams){
+
+                Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                contentSelectionIntent.setType("*/*");
+
+                Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
+                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
+                chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
+
+                ((CourseUnitNavigationActivity) activity).setUploadMessage(filePathCallback);
+
+                activity.startActivityForResult(chooserIntent, ((CourseUnitNavigationActivity) activity).FILECHOOSER_RESULTCODE);
+                return true;
             }
         });
     }
