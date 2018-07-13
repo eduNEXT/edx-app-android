@@ -126,19 +126,23 @@ public class URLInterceptorWebViewClient extends WebViewClient {
             @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
             public boolean onShowFileChooser(
                     WebView webView, ValueCallback<Uri[]> filePathCallback,
-                    FileChooserParams fileChooserParams){
+                    FileChooserParams fileChooserParams) {
 
-                Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                Intent contentSelectionIntent =
+                    new Intent(Intent.ACTION_GET_CONTENT);
                 contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
                 contentSelectionIntent.setType("*/*");
 
                 Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
-                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
+                chooserIntent.putExtra(Intent.EXTRA_INTENT,
+                    contentSelectionIntent);
                 chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
 
-                ((CourseUnitNavigationActivity) activity).setUploadMessage(filePathCallback);
+                ((CourseUnitNavigationActivity) activity).setUploadMessage(
+                    filePathCallback);
 
-                activity.startActivityForResult(chooserIntent, ((CourseUnitNavigationActivity) activity).FILECHOOSER_RESULTCODE);
+                activity.startActivityForResult(chooserIntent,
+                    ((CourseUnitNavigationActivity) activity).FILECHOOSER_RESULTCODE);
                 return true;
             }
         });
@@ -212,9 +216,9 @@ public class URLInterceptorWebViewClient extends WebViewClient {
         } else if (parseEnrollLinkAndCallActionListener(url)) {
             // we handled this URL
             return true;
-        } else if (resourceDownloadActionListener(url)){
+        } else if (resourceDownloadActionListener(url)) {
             return true;
-        }else if (redirect && loadingInitialUrl) {
+        } else if (redirect && loadingInitialUrl) {
             // Server has redirected the initial url to other hosting url, in this case no need to
             // redirect the user to external browser.
             // Inspiration of this solution has been taken from: https://stackoverflow.com/questions/3149216/how-to-listen-for-a-webview-finishing-loading-a-url/5172952#5172952
@@ -299,7 +303,9 @@ public class URLInterceptorWebViewClient extends WebViewClient {
      *
      * @return true if an action listener is set and URL was a valid enroll link, false otherwise
      */
-    private boolean parseEnrollLinkAndCallActionListener(@Nullable String strUrl) {
+    private boolean parseEnrollLinkAndCallActionListener(
+            @Nullable String strUrl) {
+
         if (null == actionListener) {
             return false;
         }

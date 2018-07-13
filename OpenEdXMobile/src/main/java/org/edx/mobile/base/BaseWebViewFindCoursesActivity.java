@@ -166,7 +166,7 @@ public abstract class BaseWebViewFindCoursesActivity extends BaseFragmentActivit
     }
 
     @Override
-    public  void downloadResource(String strUrl){}
+    public  void downloadResource(String strUrl) { }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

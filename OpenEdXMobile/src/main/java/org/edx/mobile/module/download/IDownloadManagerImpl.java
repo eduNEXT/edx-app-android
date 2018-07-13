@@ -29,7 +29,8 @@ public class IDownloadManagerImpl implements IDownloadManager {
     @Inject
     public IDownloadManagerImpl(Context context) {
         this.context = context;
-        dm = (DownloadManager)context.getSystemService(Context.DOWNLOAD_SERVICE);
+        dm = (DownloadManager) context.getSystemService(
+            Context.DOWNLOAD_SERVICE);
     }
 
     @Override

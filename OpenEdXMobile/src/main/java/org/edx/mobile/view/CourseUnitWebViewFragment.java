@@ -61,8 +61,10 @@ public class CourseUnitWebViewFragment extends CourseUnitFragment {
 
             @Override
             public void downloadResource(String strUrl) {
-                IDownloadManagerImpl manager = new IDownloadManagerImpl(getContext());
-                manager.addDownload(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), strUrl, true, "SGA-Download");
+                IDownloadManagerImpl manager =
+                    new IDownloadManagerImpl(getContext());
+                manager.addDownload(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS), strUrl, true, "SGA-Download");
             }
         });
         authWebView.getWebViewClient().setPageStatusListener(new URLInterceptorWebViewClient.IPageStatusListener() {

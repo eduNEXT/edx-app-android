@@ -71,13 +71,15 @@ public class CourseUnitNavigationActivity extends CourseBaseActivity implements 
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==FILECHOOSER_RESULTCODE)
-        {
-            if (uploadMessage==null) return;
-            Uri[] result = data == null || resultCode != Activity.RESULT_OK ? null
-                    : new Uri[]{Uri.parse(data.getDataString())};
+        if (requestCode == FILECHOOSER_RESULTCODE && uploadMessage != null) {
+
+            if (data == null || resultCode != Activity.RESULT_OK) {
+                Uri[] result = new Uri[]{Uri.parse(data.getDataString())};
+            } else {
+                Uri[] result = null;
+            }
             uploadMessage.onReceiveValue(result);
             uploadMessage = null;
         }

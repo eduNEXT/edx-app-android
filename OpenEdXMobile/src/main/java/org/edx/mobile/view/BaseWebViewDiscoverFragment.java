@@ -148,10 +148,13 @@ public abstract class BaseWebViewDiscoverFragment extends OfflineSupportBaseFrag
      * @return
      */
 
-    @Override
-    public void downloadResource(String strUrl){}
     protected boolean isAllLinksExternal() {
         return false;
+    }
+
+    @Override
+    public void downloadResource(String strUrl) {
+        //**Allows to download a file froma link*/
     }
 
     /*
