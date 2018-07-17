@@ -221,4 +221,9 @@ public class DefaultActionListener implements URLInterceptorWebViewClient.Action
             failureDialogFragment.setCancelable(false);
         }
     }
+
+    @Override
+    public void downloadResource(String strUrl) {
+
+    }
 }

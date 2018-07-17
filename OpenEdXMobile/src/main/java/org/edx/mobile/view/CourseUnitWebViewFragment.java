@@ -1,9 +1,15 @@
 package org.edx.mobile.view;
 
+import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +21,9 @@ import org.edx.mobile.R;
 import org.edx.mobile.logger.Logger;
 import org.edx.mobile.model.course.CourseComponent;
 import org.edx.mobile.model.course.HtmlBlockModel;
+import org.edx.mobile.module.download.IDownloadManagerImpl;
 import org.edx.mobile.services.ViewPagerDownloadManager;
+import org.edx.mobile.util.links.WebViewLink;
 import org.edx.mobile.view.custom.AuthenticatedWebView;
 import org.edx.mobile.view.custom.URLInterceptorWebViewClient;
 
@@ -29,6 +37,8 @@ public class CourseUnitWebViewFragment extends CourseUnitFragment {
 
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout swipeContainer;
+
+    private String resourceUrl;
 
     public static CourseUnitWebViewFragment newInstance(HtmlBlockModel unit) {
         CourseUnitWebViewFragment fragment = new CourseUnitWebViewFragment();
@@ -51,10 +61,45 @@ public class CourseUnitWebViewFragment extends CourseUnitFragment {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && !resourceUrl.isEmpty()) {
+                    IDownloadManagerImpl manager = new IDownloadManagerImpl(getContext());
+                    manager.addDownload(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), resourceUrl, true, "SGA-Download");
+                }
+                return;
+            }
+        }
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         authWebView.initWebView(getActivity(), true, false);
+        authWebView.getWebViewClient().setActionListener(new URLInterceptorWebViewClient.ActionListener() {
+
+            @Override
+            public void onLinkRecognized(@NonNull WebViewLink helper) {
+
+            }
+
+            @Override
+            public void downloadResource(String strUrl) {
+                resourceUrl = strUrl;
+                if (ContextCompat.checkSelfPermission(getContext(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                } else {
+                    IDownloadManagerImpl manager = new IDownloadManagerImpl(getContext());
+                    manager.addDownload(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), strUrl, true, "Downloads");
+                }
+
+            }
+        });
         authWebView.getWebViewClient().setPageStatusListener(new URLInterceptorWebViewClient.IPageStatusListener() {
             @Override
             public void onPageStarted() {
