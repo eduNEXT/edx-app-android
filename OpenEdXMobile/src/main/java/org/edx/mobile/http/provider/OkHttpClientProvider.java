@@ -26,6 +26,7 @@ import java.util.List;
 import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.internal.Util;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 public interface OkHttpClientProvider extends Provider<OkHttpClient> {
@@ -86,7 +87,7 @@ public interface OkHttpClientProvider extends Provider<OkHttpClient> {
                 interceptors.add(new JsonMergePatchInterceptor());
                 interceptors.add(new UserAgentInterceptor(
                         System.getProperty("http.agent") + " " +
-                                context.getString(R.string.app_name) + "/" +
+                                Util.toHumanReadableAscii(context.getString(R.string.app_name)) + "/" +
                                 BuildConfig.APPLICATION_ID + "/" +
                                 BuildConfig.VERSION_NAME));
                 if (isOAuthBased) {
