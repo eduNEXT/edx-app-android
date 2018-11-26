@@ -2,6 +2,7 @@ package org.edx.mobile.util;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -47,6 +48,7 @@ public class Config {
 
     /* Composite configuration keys */
     private static final String COURSE_ENROLLMENT = "COURSE_ENROLLMENT";
+    private static final String PROGRAM = "PROGRAM";
     private static final String ZERO_RATING = "ZERO_RATING";
     private static final String FACEBOOK = "FACEBOOK";
     private static final String GOOGLE = "GOOGLE";
@@ -57,6 +59,7 @@ public class Config {
     private static final String FIREBASE = "FIREBASE";
     private static final String PUSH_NOTIFICATIONS_FLAG = "PUSH_NOTIFICATIONS";
     private static final String WHITE_LIST_OF_DOMAINS = "WHITE_LIST_OF_DOMAINS";
+    private static final String YOUTUBE_VIDEO = "YOUTUBE_VIDEO";
 
     // Features
     private static final String USER_PROFILES_ENABLED = "USER_PROFILES_ENABLED";
@@ -174,6 +177,30 @@ public class Config {
 
         public boolean isSubjectDiscoveryEnabled() {
             return subjectDiscovery;
+        }
+    }
+
+    public static class ProgramConfig {
+        @SerializedName("ENABLED")
+        private boolean enabled;
+
+        @SerializedName("PROGRAM_URL")
+        private String url;
+
+        @SerializedName("PROGRAM_DETAIL_URL_TEMPLATE")
+        private String detailUrlTemplate;
+
+        public boolean isEnabled() {
+            // TODO Disable program feature for kitkat users, See Jira story LEARNER-6625 for more details.
+            return enabled && Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT ;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String getDetailUrlTemplate() {
+            return detailUrlTemplate;
         }
     }
 
@@ -429,6 +456,22 @@ public class Config {
         }
     }
 
+    public static class EmbeddedYoutubeConfig {
+        @SerializedName("ENABLED")
+        private boolean mEnabled;
+
+        @SerializedName("YOUTUBE_API_KEY")
+        private String mYoutubeApiKey;
+
+        public boolean isYoutubeEnabled() {
+            return mEnabled;
+        }
+
+        public String getYoutubeApiKey() {
+            return mYoutubeApiKey;
+        }
+    }
+
     @Inject
     public Config(Context context) {
         try {
@@ -617,6 +660,11 @@ public class Config {
     }
 
     @NonNull
+    public ProgramConfig getProgramConfig() {
+        return getObjectOrNewInstance(PROGRAM, ProgramConfig.class);
+    }
+
+    @NonNull
     public ZeroRatingConfig getZeroRatingConfig() {
         return getObjectOrNewInstance(ZERO_RATING, ZeroRatingConfig.class);
     }
@@ -676,5 +724,10 @@ public class Config {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    @NonNull
+    public EmbeddedYoutubeConfig getEmbeddedYoutubeConfig() {
+        return getObjectOrNewInstance(YOUTUBE_VIDEO, EmbeddedYoutubeConfig.class);
     }
 }

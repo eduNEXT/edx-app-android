@@ -55,8 +55,8 @@ public class CourseUnitVideoFragment extends CourseUnitFragment
     implements IPlayerEventCallback, TranscriptListener {
 
     protected final static Logger logger = new Logger(CourseUnitVideoFragment.class.getName());
-    private final static String HAS_NEXT_UNIT_ID = "has_next_unit";
-    private final static String HAS_PREV_UNIT_ID = "has_prev_unit";
+    protected final static String HAS_NEXT_UNIT_ID = "has_next_unit";
+    protected final static String HAS_PREV_UNIT_ID = "has_prev_unit";
     private final static int MSG_UPDATE_PROGRESS = 1022;
     private final static int UNFREEZE_AUTOSCROLL_DELAY_MS = 3500;
 
@@ -86,6 +86,7 @@ public class CourseUnitVideoFragment extends CourseUnitFragment
 
     @Inject
     private CourseAPI courseApi;
+    private ViewTreeObserver.OnGlobalLayoutListener transcriptListLayoutListener;
 
     /**
      * Create a new instance of fragment
@@ -110,8 +111,8 @@ public class CourseUnitVideoFragment extends CourseUnitFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        unit = getArguments() == null ? null :
-            (VideoBlockModel) getArguments().getSerializable(Router.EXTRA_COURSE_UNIT);
+        // We've already parsed this in the base class, so cast and use that
+        unit = (VideoBlockModel) super.unit;
         hasNextUnit = getArguments().getBoolean(HAS_NEXT_UNIT_ID);
         hasPreviousUnit = getArguments().getBoolean(HAS_PREV_UNIT_ID);
     }
@@ -400,7 +401,7 @@ public class CourseUnitVideoFragment extends CourseUnitFragment
         return filepath;
     }
 
-    private TranscriptModel getTranscriptModel(DownloadEntry video){
+    protected TranscriptModel getTranscriptModel(DownloadEntry video){
         TranscriptModel transcript = null;
         if(unit!=null && unit.getData() != null &&
             unit.getData().transcripts != null) {
@@ -435,6 +436,7 @@ public class CourseUnitVideoFragment extends CourseUnitFragment
     @Override
     public void onStop() {
         super.onStop();
+        transcriptListView.getViewTreeObserver().removeOnGlobalLayoutListener(transcriptListLayoutListener);
         isActivityStarted = false;
         AppConstants.videoListDeleteMode = false;
 
@@ -644,22 +646,17 @@ public class CourseUnitVideoFragment extends CourseUnitFragment
             } else {
                 messageContainer.setVisibility(View.GONE);
                 transcriptListView.setVisibility(View.VISIBLE);
-
                 // Calculating the offset required for centralizing the current transcript item
                 // p.s. Without this listener the getHeight function returns 0
-                transcriptListView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                transcriptListLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
                     public void onGlobalLayout() {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            transcriptListView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        } else {
-                            transcriptListView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                        }
-
+                        transcriptListView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         final float transcriptRowHeight = getResources().getDimension(R.dimen.transcript_row_height);
                         final float listviewHeight = transcriptListView.getHeight();
                         topOffset = (listviewHeight / 2) - (transcriptRowHeight / 2);
                     }
-                });
+                };
+                transcriptListView.getViewTreeObserver().addOnGlobalLayoutListener(transcriptListLayoutListener);
             }
         }
     }
@@ -689,7 +686,7 @@ public class CourseUnitVideoFragment extends CourseUnitFragment
         }
     }
 
-    private void initTranscriptListView() {
+    protected void initTranscriptListView() {
         transcriptAdapter = new TranscriptAdapter(getContext(), environment);
         transcriptListView.setAdapter(transcriptAdapter);
         transcriptListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -7,17 +7,23 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.multidex.MultiDexApplication;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.crashlytics.android.core.CrashlyticsCore;
+import com.evernote.android.state.StateSaver;
+import com.facebook.FacebookSdk;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
+import com.livefront.bridge.Bridge;
+import com.livefront.bridge.SavedStateHandler;
 import com.newrelic.agent.android.NewRelic;
 
 import org.edx.mobile.BuildConfig;
@@ -136,13 +142,6 @@ public abstract class MainApplication extends MultiDexApplication {
         registerReceiver(new NetworkConnectivityReceiver(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         registerReceiver(new NetworkConnectivityReceiver(), new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
 
-        // initialize Facebook SDK
-        boolean isOnZeroRatedNetwork = NetworkUtil.isOnZeroRatedNetwork(getApplicationContext(), config);
-        if (!isOnZeroRatedNetwork
-                && config.getFacebookConfig().isEnabled()) {
-            com.facebook.Settings.setApplicationId(config.getFacebookConfig().getFacebookAppId());
-        }
-
         checkIfAppVersionUpgraded(this);
 
         // Register Font Awesome module in android-iconify library
@@ -165,6 +164,28 @@ public abstract class MainApplication extends MultiDexApplication {
             Glide.get(this).register(GlideUrl.class, InputStream.class,
                     new OkHttpUrlLoader.Factory(injector.getInstance(OkHttpClientProvider.class).get()));
         }
+
+        // Initialize Facebook SDK
+        boolean isOnZeroRatedNetwork = NetworkUtil.isOnZeroRatedNetwork(getApplicationContext(), config);
+        if (!isOnZeroRatedNetwork && config.getFacebookConfig().isEnabled()) {
+            // Facebook sdk should be initialized through AndroidManifest meta data declaration but
+            // we are generating the meta data through gradle script due to which it is necessary
+            // to manually initialize the sdk here.
+            FacebookSdk.setApplicationId(config.getFacebookConfig().getFacebookAppId());
+            FacebookSdk.sdkInitialize(getApplicationContext());
+        }
+
+        Bridge.initialize(this, new SavedStateHandler() {
+            @Override
+            public void saveInstanceState(@NonNull Object target, @NonNull Bundle state) {
+                StateSaver.saveInstanceState(target, state);
+            }
+
+            @Override
+            public void restoreInstanceState(@NonNull Object target, @Nullable Bundle state) {
+                StateSaver.restoreInstanceState(target, state);
+            }
+        });
     }
 
     private void checkIfAppVersionUpgraded(Context context) {

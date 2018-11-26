@@ -11,6 +11,7 @@ import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.text.TextUtils;
@@ -57,6 +58,7 @@ import org.edx.mobile.services.LastAccessManager;
 import org.edx.mobile.services.VideoDownloadHelper;
 import org.edx.mobile.util.NetworkUtil;
 import org.edx.mobile.util.PermissionsUtil;
+import org.edx.mobile.util.UiUtil;
 import org.edx.mobile.view.adapters.CourseOutlineAdapter;
 import org.edx.mobile.view.common.TaskProgressCallback;
 
@@ -86,6 +88,7 @@ public class CourseOutlineFragment extends OfflineSupportBaseFragment
     private ActionMode deleteMode;
     private DownloadEntry downloadEntry;
     private List<? extends HasDownloadEntry> downloadEntries;
+    private SwipeRefreshLayout swipeContainer;
 
     private Call<CourseStructureV1Model> getHierarchyCall;
 
@@ -137,9 +140,21 @@ public class CourseOutlineFragment extends OfflineSupportBaseFragment
 
         final View view = inflater.inflate(R.layout.fragment_course_outline, container, false);
         listView = (ListView) view.findViewById(R.id.outline_list);
-        errorNotification = new FullScreenErrorNotification(listView);
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+        errorNotification = new FullScreenErrorNotification(swipeContainer);
         loadingIndicator = view.findViewById(R.id.loading_indicator);
 
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Hide the progress bar as swipe layout has its own progress indicator
+                loadingIndicator.setVisibility(View.GONE);
+                errorNotification.hideError();
+                getCourseComponentFromServer(false);
+            }
+        });
+        UiUtil.setSwipeRefreshLayoutColors(swipeContainer);
+        
         restore(bundle);
         initListView(view);
         fetchCourseComponent();
@@ -160,6 +175,7 @@ public class CourseOutlineFragment extends OfflineSupportBaseFragment
             courseData = (EnrolledCoursesResponse) bundle.getSerializable(Router.EXTRA_COURSE_DATA);
             courseComponentId = bundle.getString(Router.EXTRA_COURSE_COMPONENT_ID);
             isVideoMode = savedInstanceState.getBoolean(Router.EXTRA_IS_VIDEOS_MODE);
+            isSingleVideoDownload = savedInstanceState.getBoolean("isSingleVideoDownload");
             if (savedInstanceState.containsKey(Router.EXTRA_IS_ON_COURSE_OUTLINE)) {
                 isOnCourseOutline = savedInstanceState.getBoolean(Router.EXTRA_IS_ON_COURSE_OUTLINE);
             } else {
@@ -227,6 +243,7 @@ public class CourseOutlineFragment extends OfflineSupportBaseFragment
             protected void onResponse(@NonNull final CourseComponent courseComponent) {
                 courseManager.addCourseDataInAppLevelCache(courseId, courseComponent);
                 loadData(validateCourseComponent(courseComponent));
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
@@ -236,6 +253,7 @@ public class CourseOutlineFragment extends OfflineSupportBaseFragment
                     errorNotification.showError(getContext(), error);
                     logger.error(error, true);
                 }
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
@@ -243,6 +261,7 @@ public class CourseOutlineFragment extends OfflineSupportBaseFragment
                 if (!EventBus.getDefault().isRegistered(CourseOutlineFragment.this)) {
                     EventBus.getDefault().registerSticky(CourseOutlineFragment.this);
                 }
+                swipeContainer.setRefreshing(false);
             }
         });
     }
@@ -289,7 +308,8 @@ public class CourseOutlineFragment extends OfflineSupportBaseFragment
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                if (((IconImageView) view.findViewById(R.id.bulk_download)).getIcon() == FontAwesomeIcons.fa_check) {
+                final IconImageView bulkDownloadIcon = (IconImageView) view.findViewById(R.id.bulk_download);
+                if (bulkDownloadIcon != null && bulkDownloadIcon.getIcon() == FontAwesomeIcons.fa_check) {
                     ((AppCompatActivity) getActivity()).startSupportActionMode(deleteModelCallback);
                     listView.setItemChecked(position, true);
                     return true;
@@ -349,8 +369,10 @@ public class CourseOutlineFragment extends OfflineSupportBaseFragment
         if (isSingleVideoDownload) {
             downloadEntry = null;
         } else {
-            downloadEntries.clear();
-            downloadEntries = null;
+            if (downloadEntries != null) {
+                downloadEntries.clear();
+                downloadEntries = null;
+            }
         }
     }
 
@@ -469,7 +491,7 @@ public class CourseOutlineFragment extends OfflineSupportBaseFragment
      */
     private void loadData(@NonNull CourseComponent courseComponent) {
         courseComponentId = courseComponent.getId();
-        if (courseData == null)
+        if (courseData == null || getActivity() == null)
             return;
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().registerSticky(this);
@@ -521,6 +543,7 @@ public class CourseOutlineFragment extends OfflineSupportBaseFragment
             bundle.putString(Router.EXTRA_COURSE_COMPONENT_ID, courseComponentId);
         outState.putBundle(Router.EXTRA_BUNDLE, bundle);
         outState.putBoolean(Router.EXTRA_IS_VIDEOS_MODE, isVideoMode);
+        outState.putBoolean("isSingleVideoDownload", isSingleVideoDownload);
         outState.putBoolean(Router.EXTRA_IS_ON_COURSE_OUTLINE, isOnCourseOutline);
     }
 

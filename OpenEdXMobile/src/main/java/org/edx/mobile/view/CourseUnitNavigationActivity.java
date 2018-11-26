@@ -76,8 +76,17 @@ public class CourseUnitNavigationActivity extends CourseBaseActivity implements 
 
 
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            private Boolean firstTime = true;
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (firstTime) {
+                    firstTime = false;
+                    CourseUnitFragment initialPage = (CourseUnitFragment) pagerAdapter.instantiateItem(pager, position);
+                    if (initialPage != null) {
+                        initialPage.onPageShow();
+                    }
+                }
             }
 
             @Override
@@ -254,8 +263,10 @@ public class CourseUnitNavigationActivity extends CourseBaseActivity implements 
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         updateUIForOrientation();
-        environment.getAnalyticsRegistry().trackCourseComponentViewed(selectedUnit.getId(),
-                courseData.getCourse().getId(), selectedUnit.getBlockId());
+        if (selectedUnit != null) {
+            environment.getAnalyticsRegistry().trackCourseComponentViewed(selectedUnit.getId(),
+                    courseData.getCourse().getId(), selectedUnit.getBlockId());
+        }
     }
 
     private void updateUIForOrientation() {
