@@ -3,23 +3,22 @@ package org.edx.mobile.view;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.view.Gravity;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
-
 
 import org.edx.mobile.R;
 import org.edx.mobile.authentication.LoginAPI;
 import org.edx.mobile.base.BaseFragmentActivity;
 import org.edx.mobile.databinding.ActivitySamlWebViewBinding;
-import static org.edx.mobile.http.constants.ApiConstants.SAML_PROVIDER_LOGIN_URL;
-
 import org.edx.mobile.http.HttpStatus;
 import org.edx.mobile.http.HttpStatusException;
 import org.edx.mobile.model.api.ProfileModel;
@@ -28,6 +27,9 @@ import org.edx.mobile.module.prefs.LoginPrefs;
 import org.edx.mobile.task.Task;
 import org.edx.mobile.util.Config;
 import org.edx.mobile.util.IntentFactory;
+import org.edx.mobile.util.images.ErrorUtils;
+
+import static org.edx.mobile.http.constants.ApiConstants.SAML_PROVIDER_URL;
 
 
 public class SamlWebViewActivity extends BaseFragmentActivity {
@@ -43,6 +45,8 @@ public class SamlWebViewActivity extends BaseFragmentActivity {
 
     private ActivitySamlWebViewBinding activitySamlWebViewBinding;
 
+    private String authEntry;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +58,8 @@ public class SamlWebViewActivity extends BaseFragmentActivity {
         webSettings.setJavaScriptEnabled(true);
         setTitle(config.getSamlConfig().getSamlName());
         myWebView.setWebViewClient(new MyWebViewClient());
-        String url = config.getApiHostURL() + SAML_PROVIDER_LOGIN_URL.replace("{idpSlug}", idpSlug);
+        authEntry = getIntent().getStringExtra("AUTH_ENTRY");
+        String url = config.getApiHostURL() + SAML_PROVIDER_URL.replace("{idpSlug}", idpSlug).replace("{authEntry}", authEntry);
         myWebView.loadUrl(url);
     }
 
@@ -84,7 +89,7 @@ public class SamlWebViewActivity extends BaseFragmentActivity {
         public void onPageFinished(WebView view, String url) {
 
             String cookies = CookieManager.getInstance().getCookie(url);
-            if (url.contains(config.getApiHostURL()) && cookies!= null) {
+            if (url.contains(config.getApiHostURL()) && cookies != null) {
                 loginPrefs.storeUserCookies(cookies);
                 ProfileTask profileTask = new ProfileTask(getApplicationContext(), view);
                 profileTask.execute();
@@ -113,9 +118,16 @@ public class SamlWebViewActivity extends BaseFragmentActivity {
         public void onException(Exception ex) {
             if (ex instanceof HttpStatusException &&
                     ((HttpStatusException) ex).getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                loginPrefs.clear();
-                view.setVisibility(View.VISIBLE);
-                activitySamlWebViewBinding.webViewProgress.loadingIndicator.setVisibility(View.GONE);
+                if (authEntry.equals("login")){
+                    loginPrefs.clear();
+                    Toast toast = Toast.makeText(this.getContext(), getString(R.string.login_failed),Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                    finish();
+                } else {
+                    view.setVisibility(View.VISIBLE);
+                    activitySamlWebViewBinding.webViewProgress.loadingIndicator.setVisibility(View.GONE);
+                }
             }
         }
 
@@ -126,7 +138,7 @@ public class SamlWebViewActivity extends BaseFragmentActivity {
         }
     }
 
-    public void onUserLoginSuccess(@NonNull ProfileModel profile){
+    public void onUserLoginSuccess(@NonNull ProfileModel profile) {
         analyticsRegistry.identifyUser(
                 profile.id.toString(),
                 profile.email,

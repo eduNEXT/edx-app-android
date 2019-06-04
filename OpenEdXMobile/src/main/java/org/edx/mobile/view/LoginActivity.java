@@ -79,7 +79,9 @@ public class LoginActivity
             @Override
             public void onClick(View view) {
                 //redirect to SAML webview activity
-                startActivity(SamlWebViewActivity.newIntent());
+                Intent intent = SamlWebViewActivity.newIntent();
+                intent.putExtra("AUTH_ENTRY", "login");
+                startActivity(intent);
             }
         });
 
