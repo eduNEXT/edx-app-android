@@ -60,6 +60,7 @@ public class Config {
     private static final String PUSH_NOTIFICATIONS_FLAG = "PUSH_NOTIFICATIONS";
     private static final String WHITE_LIST_OF_DOMAINS = "WHITE_LIST_OF_DOMAINS";
     private static final String YOUTUBE_VIDEO = "YOUTUBE_VIDEO";
+    private static final String SAML = "SAML";
 
     // Features
     private static final String USER_PROFILES_ENABLED = "USER_PROFILES_ENABLED";
@@ -472,6 +473,38 @@ public class Config {
         }
     }
 
+    public static class SAMLConfig {
+        @SerializedName("ENABLED")
+        private boolean mEnabled;
+
+        @SerializedName("SAML_IDP_SLUG")
+        private String mSamlIdpSlug;
+
+        @SerializedName("NAME")
+        private String mName;
+
+        public SAMLConfig(boolean mEnabled, String mSamlIdpSlug, String mName) {
+            this.mEnabled = mEnabled;
+            this.mSamlIdpSlug = mSamlIdpSlug;
+            this.mName = mName;
+        }
+
+        public SAMLConfig() {
+        }
+
+        public boolean isEnabled() {
+            return mEnabled && !TextUtils.isEmpty(mSamlIdpSlug);
+        }
+
+        public String getSamlIdpSlug() {
+            return mSamlIdpSlug;
+        }
+
+        public String getSamlName() {
+            return mName;
+        }
+    }
+
     @Inject
     public Config(Context context) {
         try {
@@ -707,6 +740,11 @@ public class Config {
     @NonNull
     public EndToEndConfig getEndToEndConfig() {
         return getObjectOrNewInstance(END_TO_END_TEST, EndToEndConfig.class);
+    }
+
+    @NonNull
+    public SAMLConfig getSamlConfig() {
+        return getObjectOrNewInstance(SAML, SAMLConfig.class);
     }
 
     @NonNull
