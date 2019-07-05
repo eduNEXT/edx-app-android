@@ -442,6 +442,7 @@ android {
         }
 
         release {
+            manifestPlaceholders = [ supportsRtl:"true"]
             signingConfig signingConfigs.releasekey
             applicationVariants.all { variant ->
                 variant.outputs.all { output ->
