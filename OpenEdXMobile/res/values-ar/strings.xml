@@ -99,17 +99,17 @@
   <!--Title of webview based Find Courses Screen-->
   <string name="label_discover">إستكشف</string>
    <!-- Title of Find Courses tab on Main Dashboard screen -->
-  <string name="label_discovery">اكتشاف</string> 
+  <string name="label_discovery">بحث</string> 
   <!--Title of Degrees tab on Discovery screen-->
   <!--Title of Find Courses tab on Main Dashboard screen-->
   <!--Button allowing users to send an email for feedback-->
-  <string name="label_submit_feedback">أرسل ملاحظاتك</string>
+  <string name="label_submit_feedback">للتواصل معنا</string>
   <!--Toggle switch on state label-->
   <string name="toggle_turn_on">تشغيل</string>
   <!--Toggle switch off state label-->
   <string name="toggle_turn_off">إطفاء</string>
   <!--Logout button label-->
-  <string name="logout">تسجيل الخروج</string>
+  <string name="logout">الخروج</string>
   <!--Settings screen title-->
   <string name="settings_txt">الإعدادات</string>
   <!--Settings screen version-->
@@ -187,7 +187,7 @@
   <!--Label indicating new course content has been downloaded-->
   <string name="new_course_content">محتويات المساق الجديد</string>
   <!--Label for date when course starts-->
-  <string name="label_starting">يبدأ في {date}</string>
+  <string name="label_starting">يبدأ {date}</string>
   <!--Label for course that has ended-->
   <string name="label_ended">انتهى في {date}</string>
   <!--Label for date when course is ending-->
@@ -225,7 +225,7 @@
   <!--Label for the discussion topics page-->
   <string name="discussion_topics_title">مواضيع النقاش</string>
   <!--Hint displayed in search view for discussion posts-->
-  <string name="topics_search">ابحث في جميع المشاركات</string>
+  <string name="topics_search">أبحث في جميع النقاشات</string>
   <!--Discussion Posts Fragment-->
   <!--Title for discussion post search results-->
   <string name="discussion_posts_search_title">نتائج البحث</string>
@@ -236,7 +236,7 @@
   <!--Label for creating a new comment-->
   <!--Discussion posts filter options-->
   <!--Discussion posts filter for all posts-->
-  <string name="discussion_posts_filter_all_posts">جميع المشاركات</string>
+  <string name="discussion_posts_filter_all_posts">جميع النقاشات</string>
   <!--Discussion posts filter for unread posts-->
   <string name="discussion_posts_filter_unread_posts">غير مقروء</string>
   <!--Discussion posts filter for unanswered posts-->
@@ -537,7 +537,7 @@
   <string name="forum_no_results_for_filtered_following">نتائج المرشح لا تتضمن أي منشورات متابعة.</string>
   <string name="forum_no_results_in_category">لا توجد مشاركات في فئة النقاش هذه.</string>
   <string name="forum_no_results_with_filter">جرّب إزالة مرشّح مشاركاتك.</string>
-  <string name="forum_post_i_am_following">المشاركات التي أتابعها</string>
+  <string name="forum_post_i_am_following">النقاشات التي أتابعها</string>
   <string name="forum_follow">تابع</string>
   <string name="forum_unfollow">إلغاء المتابعة</string>
   <!--User Profiles-->
@@ -546,7 +546,7 @@
   <!--The accessibility description for the username section-->
   <string name="profile_username_description">اسم المستخدم: {username}</string>
   <!--The accessibility description for the language section-->
-  <string name="profile_language_description">اللغة: {اللغة}</string>
+  <string name="profile_language_description">اللغة: {language}</string>
   <!--The accessibility description for the location section-->
   <string name="profile_location_description">الموقع: {الموقع}</string>
   <!--The accessibility description for the "About Me" section-->

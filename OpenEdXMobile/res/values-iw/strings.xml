@@ -102,7 +102,7 @@
     <!--Title of webview based Find Courses Screen-->
     <string name="label_discover">גלו</string>
     <!--Title of Find Courses tab on Main Dashboard screen-->
-    <string name="label_discovery">גילוי</string>
+    <string name="label_discovery">מצא קורס</string>
     <!--Button allowing users to send an email for feedback-->
     <string name="label_submit_feedback">הגש משוב</string>
     <!--Toggle switch on state label-->
