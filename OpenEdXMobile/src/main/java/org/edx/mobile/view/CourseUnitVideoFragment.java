@@ -72,8 +72,8 @@ public class CourseUnitVideoFragment extends CourseUnitFragment
     private Runnable playPending;
     private final Handler playHandler = new Handler();
     private View messageContainer;
-    private ListView transcriptListView;
-    private TranscriptAdapter transcriptAdapter;
+    protected ListView transcriptListView;
+    protected TranscriptAdapter transcriptAdapter;
 
     private boolean hasNextUnit;
 
@@ -129,6 +129,15 @@ public class CourseUnitVideoFragment extends CourseUnitFragment
         transcriptListView = (ListView) v.findViewById(R.id.transcript_listview);
 
         return v;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Configuration config = getResources().getConfiguration();
+        if(config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            view.setRotationY(180);
+        }
     }
 
     @Override

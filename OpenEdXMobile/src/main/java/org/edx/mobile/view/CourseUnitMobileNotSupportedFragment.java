@@ -1,5 +1,6 @@
 package org.edx.mobile.view;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,6 +59,15 @@ public class CourseUnitMobileNotSupportedFragment extends CourseUnitFragment {
             }
         });
         return v;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Configuration config = getResources().getConfiguration();
+        if(config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            view.setRotationY(180);
+        }
     }
 
     @Override

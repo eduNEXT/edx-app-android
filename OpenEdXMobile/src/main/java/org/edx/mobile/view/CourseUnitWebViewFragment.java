@@ -3,6 +3,7 @@ package org.edx.mobile.view;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -45,6 +46,7 @@ public class CourseUnitWebViewFragment extends CourseUnitFragment {
         Bundle args = new Bundle();
         args.putSerializable(Router.EXTRA_COURSE_UNIT, unit);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -58,6 +60,10 @@ public class CourseUnitWebViewFragment extends CourseUnitFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         swipeContainer.setEnabled(false);
+        Configuration config = getResources().getConfiguration();
+        if(config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            view.setRotationY(180);
+        }
     }
 
     @Override
