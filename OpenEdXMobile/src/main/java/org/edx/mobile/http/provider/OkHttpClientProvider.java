@@ -22,6 +22,7 @@ import org.edx.mobile.http.util.Tls12SocketFactory;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
 import okhttp3.Interceptor;
@@ -70,7 +71,10 @@ public interface OkHttpClientProvider extends Provider<OkHttpClient> {
                     (usesOfflineCache ? USES_OFFLINE_CACHE : 0);
             OkHttpClient client = clients[index];
             if (client == null) {
-                final OkHttpClient.Builder builder = new OkHttpClient.Builder();
+                final OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                        .connectTimeout(20, TimeUnit.SECONDS)
+                        .writeTimeout(20, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS);
                 List<Interceptor> interceptors = builder.interceptors();
                 if (usesOfflineCache) {
                     final File cacheDirectory = new File(context.getFilesDir(), "http-cache");
