@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceRequest;
@@ -36,10 +37,15 @@ import org.edx.mobile.interfaces.RefreshListener;
 import org.edx.mobile.logger.Logger;
 import org.edx.mobile.module.prefs.LoginPrefs;
 import org.edx.mobile.services.EdxCookieManager;
+import org.edx.mobile.util.Config;
 import org.edx.mobile.util.NetworkUtil;
 import org.edx.mobile.util.WebViewUtil;
 
+import java.util.Locale;
+
 import de.greenrobot.event.EventBus;
+import okhttp3.Cookie;
+import okhttp3.HttpUrl;
 import roboguice.RoboGuice;
 import roboguice.inject.InjectView;
 
@@ -53,7 +59,7 @@ public class AuthenticatedWebView extends FrameLayout implements RefreshListener
     protected final Logger logger = new Logger(getClass().getName());
 
     @Inject
-    private LoginPrefs loginPrefs;
+    private Config config;
 
     @InjectView(R.id.loading_indicator)
     private ProgressBar progressWheel;
@@ -237,7 +243,29 @@ public class AuthenticatedWebView extends FrameLayout implements RefreshListener
                 cookieManager.tryToRefreshSessionCookie();
             } else {
                 didReceiveError = false;
+                setLanguageCookie();
                 webView.loadUrl(url);
+            }
+        }
+    }
+
+    private void setLanguageCookie(){
+        final CookieManager cookieManager = CookieManager.getInstance();
+        String userCookies = cookieManager.getCookie(config.getApiHostURL());
+        for (String cookie : userCookies.split("; ") ) {
+            if (cookie.startsWith("openedx-language-preference")){
+                String key = Locale.getDefault().getLanguage();
+                if (key.equals("iw")) {
+                    key = "he";
+                }
+                Cookie oldLanguageCookie = Cookie.parse(HttpUrl.parse(config.getApiHostURL()), cookie);
+                Cookie newLanguageCookie = new Cookie.Builder()
+                        .domain(oldLanguageCookie.domain())
+                        .path(oldLanguageCookie.path())
+                        .name(oldLanguageCookie.name())
+                        .value(key)
+                        .build();
+                cookieManager.setCookie(config.getApiHostURL(), newLanguageCookie.toString());
             }
         }
     }
