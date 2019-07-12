@@ -178,6 +178,7 @@ public class AuthenticatedWebView extends FrameLayout implements RefreshListener
                 } else {
                     hideLoadingProgress();
                 }
+                webView.loadUrl("javascript:(function() {$('.keyboard-help-dialog .modal-window .modal-content li').css('font-size', '0.8rem');})()");
                 super.onPageFinished(view, url);
             }
         };
