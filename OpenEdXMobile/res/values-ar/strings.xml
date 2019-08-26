@@ -91,7 +91,7 @@
   <!--Content description for edit profile button-->
   <string name="open_profile_button">الدخول إلى صفحتك الشخصية</string>
   <!--Title of user's course list screen-->
-  <string name="label_my_courses">المساقات</string>
+  <string name="label_my_courses">مساقاتي</string>
   <!--Title of user's program list screen-->
   <string name="label_my_programs" tools:ignore="MissingTranslation">البرامج</string>
   <!--Title of native Find Courses Screen-->
@@ -99,7 +99,7 @@
   <!--Title of webview based Find Courses Screen-->
   <string name="label_discover">إستكشف</string>
    <!-- Title of Find Courses tab on Main Dashboard screen -->
-  <string name="label_discovery">بحث</string> 
+  <string name="label_discovery">القائمة</string> 
   <!--Title of Degrees tab on Discovery screen-->
   <!--Title of Find Courses tab on Main Dashboard screen-->
   <!--Button allowing users to send an email for feedback-->
@@ -548,7 +548,7 @@
   <!--The accessibility description for the language section-->
   <string name="profile_language_description">اللغة: {language}</string>
   <!--The accessibility description for the location section-->
-  <string name="profile_location_description">الموقع: {الموقع}</string>
+  <string name="profile_location_description">الموقع: {location}</string>
   <!--The accessibility description for the "About Me" section-->
   <string name="profile_about_me_description">معلومات عني:  {about_me}</string>
   <!--Label for toolbar icon that launches the edit profile screen for the current user-->
