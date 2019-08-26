@@ -1,6 +1,8 @@
 package org.edx.mobile.http.provider;
 
 import android.content.Context;
+import android.os.Build;
+import android.os.LocaleList;
 import android.support.annotation.NonNull;
 
 import com.google.inject.Inject;
@@ -21,12 +23,16 @@ import org.edx.mobile.http.interceptor.UserAgentInterceptor;
 import org.edx.mobile.http.util.Tls12SocketFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.internal.Util;
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -94,6 +100,27 @@ public interface OkHttpClientProvider extends Provider<OkHttpClient> {
                                 Util.toHumanReadableAscii(context.getString(R.string.app_name)) + "/" +
                                 BuildConfig.APPLICATION_ID + "/" +
                                 BuildConfig.VERSION_NAME));
+                interceptors.add(new Interceptor() {
+
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Request.Builder builder = chain.request().newBuilder();
+
+                        builder.addHeader("Accept-Language", getLanguage());
+                        Request request = builder.build();
+                        Response response = chain.proceed(request);
+
+                        return response;
+                    }
+
+                    private String getLanguage() {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            return LocaleList.getDefault().toLanguageTags();
+                        } else {
+                            return Locale.getDefault().getLanguage();
+                        }
+                    }
+                });
                 if (isOAuthBased) {
                     interceptors.add(new OauthHeaderRequestInterceptor(context));
                 }
