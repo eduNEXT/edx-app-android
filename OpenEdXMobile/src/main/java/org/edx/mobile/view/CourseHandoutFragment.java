@@ -1,6 +1,7 @@
 package org.edx.mobile.view;
 
 import android.annotation.SuppressLint;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -124,7 +125,14 @@ public class CourseHandoutFragment extends BaseFragment implements RefreshListen
 
         StringBuilder buff = WebViewUtil.getIntialWebviewBuffer(getActivity(), logger);
 
-        buff.append("<body>");
+        Configuration config = getResources().getConfiguration();
+
+        if(config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            buff.append("<body dir='rtl'>");
+        } else {
+            buff.append("<body>");
+        }
+
         buff.append("<div class=\"header\">");
         buff.append(handout.handouts_html);
         buff.append("</div>");
