@@ -1,6 +1,7 @@
 package org.edx.mobile.view;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -173,7 +174,15 @@ public class CourseCombinedInfoFragment extends BaseFragment implements RefreshL
 
         StringBuilder buff = WebViewUtil.getIntialWebviewBuffer(getActivity(), logger);
 
-        buff.append("<body>");
+
+        Configuration config = getResources().getConfiguration();
+
+        if(config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            buff.append("<body dir='rtl'>");
+        } else {
+            buff.append("<body>");
+        }
+
         for (AnnouncementsModel model : announcementsList) {
             buff.append("<div class=\"header\">");
             buff.append(model.getDate());
