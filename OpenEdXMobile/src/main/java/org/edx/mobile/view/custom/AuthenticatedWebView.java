@@ -18,6 +18,7 @@ import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
@@ -119,6 +120,8 @@ public class AuthenticatedWebView extends FrameLayout implements RefreshListener
                             boolean isManuallyReloadable) {
         this.isManuallyReloadable = isManuallyReloadable;
         webView.clearCache(true);
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webView.getSettings().setJavaScriptEnabled(true);
         webViewClient = new URLInterceptorWebViewClient(fragmentActivity, webView) {
             @Override
