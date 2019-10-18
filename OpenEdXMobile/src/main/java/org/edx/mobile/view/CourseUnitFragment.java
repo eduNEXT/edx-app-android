@@ -29,6 +29,7 @@ public abstract class CourseUnitFragment extends BaseFragment implements PageVie
         super.onCreate(savedInstanceState);
         unit = getArguments() == null ? null :
                 (CourseComponent) getArguments().getSerializable(Router.EXTRA_COURSE_UNIT);
+        getArguments().clear();
     }
 
     @Override

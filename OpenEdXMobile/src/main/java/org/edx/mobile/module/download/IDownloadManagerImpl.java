@@ -103,6 +103,7 @@ public class IDownloadManagerImpl implements IDownloadManager {
         Request request = new Request(Uri.parse(url));
         String cookies = CookieManager.getInstance().getCookie(url);
         request.addRequestHeader("cookie", cookies);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationUri(target);
         request.setTitle(title);
 

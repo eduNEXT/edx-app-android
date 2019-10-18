@@ -2,31 +2,41 @@ package org.edx.mobile.view;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.os.Environment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
+import android.widget.Toast;
+
+import com.google.inject.Inject;
 
 import org.edx.mobile.R;
 import org.edx.mobile.logger.Logger;
 import org.edx.mobile.model.course.CourseComponent;
 import org.edx.mobile.model.course.HtmlBlockModel;
-import org.edx.mobile.module.download.IDownloadManagerImpl;
-import org.edx.mobile.services.ViewPagerDownloadManager;
+import org.edx.mobile.module.download.IDownloadManager;
+import org.edx.mobile.module.prefs.UserPrefs;
 import org.edx.mobile.util.links.WebViewLink;
+import org.edx.mobile.services.ViewPagerDownloadManager;
 import org.edx.mobile.view.custom.AuthenticatedWebView;
 import org.edx.mobile.view.custom.URLInterceptorWebViewClient;
+
+import java.io.File;
 
 import roboguice.inject.InjectView;
 
@@ -39,7 +49,14 @@ public class CourseUnitWebViewFragment extends CourseUnitFragment {
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout swipeContainer;
 
+    @Inject
+    private UserPrefs pref;
+
+    @Inject
+    private IDownloadManager dm;
+
     private String resourceUrl;
+    private final int REQUEST_CODE = 1;
 
     public static CourseUnitWebViewFragment newInstance(HtmlBlockModel unit) {
         CourseUnitWebViewFragment fragment = new CourseUnitWebViewFragment();
@@ -70,10 +87,10 @@ public class CourseUnitWebViewFragment extends CourseUnitFragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case 1: {
+            case REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && !resourceUrl.isEmpty()) {
-                    IDownloadManagerImpl manager = new IDownloadManagerImpl(getContext());
-                    manager.addDownload(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), resourceUrl, true, "SGA-Download");
+                    final String fileName = resourceUrl.substring(resourceUrl.lastIndexOf("/") + 1);
+                    dm.addDownload(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), resourceUrl, pref.isDownloadOverWifiOnly(), fileName);
                 }
                 return;
             }
@@ -95,15 +112,15 @@ public class CourseUnitWebViewFragment extends CourseUnitFragment {
             @Override
             public void downloadResource(String strUrl) {
                 resourceUrl = strUrl;
-                if (ContextCompat.checkSelfPermission(getContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
                 } else {
-                    IDownloadManagerImpl manager = new IDownloadManagerImpl(getContext());
-                    manager.addDownload(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), strUrl, true, "Downloads");
+                    final String fileName = strUrl.substring(strUrl.lastIndexOf("/") + 1);
+                    dm.addDownload(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), strUrl, pref.isDownloadOverWifiOnly(), fileName);
+                    Toast toast = Toast.makeText(getContext(),"Downloading File", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
                 }
-
             }
         });
         authWebView.getWebViewClient().setPageStatusListener(new URLInterceptorWebViewClient.IPageStatusListener() {
