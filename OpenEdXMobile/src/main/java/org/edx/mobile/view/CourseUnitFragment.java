@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 
 import org.edx.mobile.core.IEdxEnvironment;
 import org.edx.mobile.model.course.CourseComponent;
+import org.edx.mobile.model.course.HtmlBlockModel;
 import org.edx.mobile.view.common.PageViewStateCallback;
 import org.edx.mobile.view.common.RunnableCourseComponent;
 
@@ -29,7 +30,9 @@ public abstract class CourseUnitFragment extends BaseFragment implements PageVie
         super.onCreate(savedInstanceState);
         unit = getArguments() == null ? null :
                 (CourseComponent) getArguments().getSerializable(Router.EXTRA_COURSE_UNIT);
-        getArguments().clear();
+        if (unit instanceof  HtmlBlockModel) {
+            getArguments().clear();
+        }
     }
 
     @Override
