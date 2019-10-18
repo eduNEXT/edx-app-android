@@ -52,12 +52,16 @@ public class AccountFragment extends BaseFragment {
             }
         });
 
-        binding.feedbackBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                environment.getRouter().showFeedbackScreen(getActivity(), getString(R.string.email_subject));
-            }
-        });
+        if (config.getFeedbackEmailAddress().isEmpty()) {
+            binding.feedbackBtn.setVisibility(View.GONE);
+        } else {
+            binding.feedbackBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    environment.getRouter().showFeedbackScreen(getActivity(), getString(R.string.email_subject));
+                }
+            });
+        }
 
         binding.logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
