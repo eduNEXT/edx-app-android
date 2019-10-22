@@ -181,7 +181,7 @@ public class CourseUnitVideoFragment extends CourseUnitFragment
 
             playerFragment = new PlayerFragment();
             playerFragment.setCallback(this);
-            if (environment.getConfig().isVideoTranscriptEnabled()) {
+            if (environment.getConfig().isVideoTranscriptEnabled() && unit.getData().showCaptions) {
                 playerFragment.setTranscriptCallback(this);
             }
 
