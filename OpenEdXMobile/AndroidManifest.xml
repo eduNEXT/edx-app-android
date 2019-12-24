@@ -318,6 +318,9 @@
             android:value="@integer/google_play_services_version" />
 
         <!-- Setup Firebase -->
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
         <meta-data android:name="firebase_analytics_collection_enabled"
             android:value="${firebaseEnabled}" />
 
