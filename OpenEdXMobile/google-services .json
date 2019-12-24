@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "962601555092",
+    "firebase_url": "https://zzz-edunext.firebaseio.com",
+    "project_id": "zzz-edunext",
+    "storage_bucket": "zzz-edunext.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:962601555092:android:b41f1c9143faaf37e41081",
+        "android_client_info": {
+          "package_name": "demo.edunext.io"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "962601555092-ao3tehqs7p015mtr3e79h2ag6g7jok6v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZLf8N53HWyvUwOV1ho-DpH4fkavyfsIY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "962601555092-ao3tehqs7p015mtr3e79h2ag6g7jok6v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
