@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="eula_file_link" tools:ignore="MissingTranslation">https://mobile.edunext.co/honor</string>
-    <string name="privacy_file_link" translatable="false">https://mobile.edunext.co/tos</string>
-    <string name="terms_file_link" translatable="false">https://mobile.edunext.co/privacy</string>
+    <string name="eula_file_link" tools:ignore="MissingTranslation">https://www.unc.edu.ar/campus-virtual/</string>
+    <string name="privacy_file_link" translatable="false">https://www.unc.edu.ar/campus-virtual/</string>
+    <string name="terms_file_link" translatable="false">https://www.unc.edu.ar/campus-virtual/</string>
 
     <!-- Speed Test.
     Once this feature is ready, migrate this to the YAML config -->
